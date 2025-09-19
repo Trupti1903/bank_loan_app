@@ -1,34 +1,45 @@
 import 'package:flutter/material.dart';
+import '../data/user_data.dart';
+import '../models/user.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+class RegisterScreen extends StatefulWidget {
+  const RegisterScreen({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<RegisterScreen> createState() => _RegisterScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _RegisterScreenState extends State<RegisterScreen> {
   final _formKey = GlobalKey<FormState>();
+  String name = '';
   String email = '';
+  String education = '';
   String password = '';
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Login")),
-      body: Padding(
+      appBar: AppBar(title: const Text("Register")),
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
         child: Form(
           key: _formKey,
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              TextFormField(
+                decoration: const InputDecoration(labelText: "Full Name"),
+                onChanged: (val) => name = val,
+                validator: (val) => val!.isEmpty ? "Enter your name" : null,
+              ),
               TextFormField(
                 decoration: const InputDecoration(labelText: "Email"),
                 onChanged: (val) => email = val,
                 validator: (val) => val!.isEmpty ? "Enter email" : null,
               ),
-              const SizedBox(height: 10),
+              TextFormField(
+                decoration: const InputDecoration(labelText: "Education"),
+                onChanged: (val) => education = val,
+              ),
               TextFormField(
                 decoration: const InputDecoration(labelText: "Password"),
                 obscureText: true,
@@ -40,16 +51,21 @@ class _LoginScreenState extends State<LoginScreen> {
               ElevatedButton(
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
+                    // ✅ Save the user globally
+                    UserData.setUser(
+                      User(
+                        name: name,
+                        email: email,
+                        education: education,
+                        phone: '',
+                      ),
+                    );
+
+                    // ✅ Navigate to dashboard
                     Navigator.pushReplacementNamed(context, '/dashboard');
                   }
                 },
-                child: const Text("Login"),
-              ),
-              TextButton(
-                onPressed: () {
-                  Navigator.pushNamed(context, '/register');
-                },
-                child: const Text("Don’t have an account? Register"),
+                child: const Text("Register"),
               ),
             ],
           ),
